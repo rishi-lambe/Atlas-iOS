@@ -34,13 +34,15 @@
     self = [super init];
     if (self) {
         
-       _isPurchased =[[NSUserDefaults standardUserDefaults] boolForKey:[NSString stringWithFormat:@"%@_%ld", @"in_app_purchase_for_magnifier",(long)[[NSUserDefaults standardUserDefaults] integerForKey:@"userid"]]];
+        
+        _isPurchased =[[NSUserDefaults standardUserDefaults] boolForKey:[NSString stringWithFormat:@"%@_%ld", @"in_app_purchase_for_magnifier",(long)[[NSUserDefaults standardUserDefaults] integerForKey:@"userid"]]];
+        
         
         if (!_isPurchased)
-            self.frame = CGRectMake(0, 0, 100, 100);
+            self.frame = CGRectMake(0, 0, 120, 120);
         else
-            self.frame = CGRectMake(0, 0, 300, 300);
-            
+            self.frame = CGRectMake(0, 0, 210, 210);
+        
         self.backgroundColor = [UIColor clearColor];
         self.layer.borderWidth = 1;
         self.layer.borderColor = [[UIColor clearColor] CGColor];
@@ -58,36 +60,36 @@
         self.contentLayer = [CALayer layer];
         
         if (!_isPurchased) {
-            self.contentLayer.cornerRadius = 30;
-            self.contentLayer.frame = CGRectMake(8, 2.2, 59, 62);
+            self.contentLayer.cornerRadius = 37;
+            self.contentLayer.frame = CGRectMake(8.9, 2.2, 72, 75);
         }
         else {
-            self.contentLayer.cornerRadius = 90;
-            self.contentLayer.frame = CGRectMake(22.5, 5, 179.5, 189);
+            self.contentLayer.cornerRadius = 130/2;
+            self.contentLayer.frame = CGRectMake(14.7, 4, 127, 132);
         }
         
         self.contentLayer.delegate = self;
-       
+        
         self.contentLayer.masksToBounds = YES;
         self.contentLayer.contentsScale = [[UIScreen mainScreen] scale];
         [self.layer addSublayer:self.contentLayer];
         
         /*self.frame = CGRectMake(0, 0, 70, 70);
-        self.backgroundColor = [UIColor clearColor];
-        self.layer.borderWidth = 1;
-        self.layer.borderColor = [[UIColor lightGrayColor] CGColor];
-        self.layer.cornerRadius = 35;
-        self.layer.masksToBounds = YES;
-        self.windowLevel = UIWindowLevelAlert;
-       
+         self.backgroundColor = [UIColor clearColor];
+         self.layer.borderWidth = 1;
+         self.layer.borderColor = [[UIColor lightGrayColor] CGColor];
+         self.layer.cornerRadius = 35;
+         self.layer.masksToBounds = YES;
+         self.windowLevel = UIWindowLevelAlert;
+         
+         
+         self.contentLayer = [CALayer layer];
+         self.contentLayer.frame = self.bounds;
+         self.contentLayer.delegate = self;
+         self.contentLayer.contentsScale = [[UIScreen mainScreen] scale];
+         [self.layer addSublayer:self.contentLayer];*/
         
-        self.contentLayer = [CALayer layer];
-        self.contentLayer.frame = self.bounds;
-        self.contentLayer.delegate = self;
-        self.contentLayer.contentsScale = [[UIScreen mainScreen] scale];
-        [self.layer addSublayer:self.contentLayer];*/
         
-       
     }
     
     return self;
@@ -98,9 +100,9 @@
     _pointToMagnify = pointToMagnify;
     
     CGPoint tempPoint = _pointToMagnify;
-    tempPoint.y = tempPoint.y - (_isPurchased == YES ?150:30);
+    tempPoint.y = tempPoint.y - (_isPurchased == YES ?100:60);
     _pointToMagnify = tempPoint;
-
+    
     
     CGPoint center = CGPointMake(pointToMagnify.x, self.center.y);
     if (pointToMagnify.y > CGRectGetHeight(self.bounds) * 0.5) {
@@ -124,9 +126,9 @@
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx
 {
     CGContextTranslateCTM(ctx, self.frame.size.width * 0.5, self.frame.size.height * 0.5);
-	CGContextScaleCTM(ctx, 1.2, 1.2);
-	CGContextTranslateCTM(ctx, -1 * self.pointToMagnify.x, -1 * self.pointToMagnify.y);
-	[self.viewToMagnify.layer renderInContext:ctx];
+    CGContextScaleCTM(ctx, 1.2, 1.2);
+    CGContextTranslateCTM(ctx, -1 * self.pointToMagnify.x, -1 * self.pointToMagnify.y);
+    [self.viewToMagnify.layer renderInContext:ctx];
 }
 
 @end
