@@ -93,8 +93,10 @@ extern NSString *const ATLMessageInputToolbarAccessibilityLabel;
  @abstract The left accessory button for the view. 
  @discussion By default, the button displays a camera icon. If set to `nil` the `textInputView` will expand to the left edge of the toolbar.
  */
+@property (nonatomic) UIButton *leftFirstAccessoryButton;
 @property (nonatomic) UIButton *leftAccessoryButton;
- 
+
+
 /**
  @abstract The right accessory button for the view.
  */
@@ -125,7 +127,7 @@ extern NSString *const ATLMessageInputToolbarAccessibilityLabel;
  @abstract The image displayed on left accessory button.
  @default A `camera` icon.
  */
-@property (nonatomic) UIImage *leftAccessoryImage;
+@property (nonatomic) UIImage *leftAccessoryImage,*leftFirstAccessoryImage;
 
 /**
  @abstract The image displayed on right accessory button.

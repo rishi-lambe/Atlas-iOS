@@ -76,12 +76,24 @@ static CGFloat const ATLButtonHeight = 28.0f;
         self.displaysRightAccessoryImage = YES;
         self.firstAppearance = YES;
         
+        self.leftFirstAccessoryImage = [UIImage imageNamed:@"mic" inBundle:resourcesBundle compatibleWithTraitCollection:nil];
+        
+        
         self.leftAccessoryButton = [[UIButton alloc] init];
         self.leftAccessoryButton.accessibilityLabel = ATLMessageInputToolbarCameraButton;
         self.leftAccessoryButton.contentMode = UIViewContentModeScaleAspectFit;
         [self.leftAccessoryButton setImage:self.leftAccessoryImage forState:UIControlStateNormal];
         [self.leftAccessoryButton addTarget:self action:@selector(leftAccessoryButtonTapped) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.leftAccessoryButton];
+        self.leftAccessoryButton.tag=0;
+        
+        self.leftFirstAccessoryButton=[[UIButton alloc] init];
+        self.leftFirstAccessoryButton.accessibilityLabel = ATLMessageInputToolbarCameraButton;
+        self.leftFirstAccessoryButton.contentMode = UIViewContentModeScaleAspectFit;
+        [self.leftFirstAccessoryButton setImage:self.leftFirstAccessoryImage forState:UIControlStateNormal];
+        [self.leftFirstAccessoryButton addTarget:self action:@selector(leftAccessoryButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:self.leftFirstAccessoryButton];
+        self.leftFirstAccessoryButton.tag=1;
         
         self.textInputView = [[ATLMessageComposeTextView alloc] init];
         self.textInputView.accessibilityLabel = ATLMessageInputToolbarTextInputView;
@@ -121,6 +133,7 @@ static CGFloat const ATLButtonHeight = 28.0f;
     // We layout the views manually since using Auto Layout seems to cause issues in this context (i.e. an auto height resizing text view in an input accessory view) especially with iOS 7.1.
     CGRect frame = self.frame;
     CGRect leftButtonFrame = self.leftAccessoryButton.frame;
+    CGRect leftfirstButtonFrame = self.leftFirstAccessoryButton.frame;
     CGRect rightButtonFrame = self.rightAccessoryButton.frame;
     CGRect textViewFrame = self.textInputView.frame;
 
@@ -130,16 +143,26 @@ static CGFloat const ATLButtonHeight = 28.0f;
         leftButtonFrame.size.width = ATLLeftAccessoryButtonWidth;
     }
     
+    
+    if (!self.leftFirstAccessoryButton) {
+        leftfirstButtonFrame.size.width = 0;
+    } else {
+        leftfirstButtonFrame.size.width = ATLLeftAccessoryButtonWidth;
+    }
+    
     // This makes the input accessory view work with UISplitViewController to manage the frame width.
     if (self.containerViewController) {
         CGRect windowRect = [self.containerViewController.view.superview convertRect:self.containerViewController.view.frame toView:nil];
         frame.size.width = windowRect.size.width;
         frame.origin.x = windowRect.origin.x;
     }
-    
-    leftButtonFrame.size.height = ATLButtonHeight;
-    leftButtonFrame.origin.x = ATLLeftButtonHorizontalMargin;
+    leftfirstButtonFrame.size.height = ATLButtonHeight;
+    leftfirstButtonFrame.origin.x = ATLLeftButtonHorizontalMargin;
 
+    leftButtonFrame.size.height = ATLButtonHeight;
+    leftButtonFrame.origin.x = leftfirstButtonFrame.origin.x +ATLLeftAccessoryButtonWidth;
+   
+   
     if (self.rightAccessoryButtonFont && self.textInputView.text.length) {
         rightButtonFrame.size.width = [ATLLocalizedString(@"atl.messagetoolbar.send.key", self.rightAccessoryButtonTitle, nil) boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:0 attributes:@{NSFontAttributeName: self.rightAccessoryButtonFont} context:nil].size.width + ATLRightAccessoryButtonPadding;
     } else {
@@ -164,12 +187,16 @@ static CGFloat const ATLButtonHeight = 28.0f;
         self.buttonCenterY = (CGRectGetHeight(frame) - CGRectGetHeight(leftButtonFrame)) / 2;
     }
     leftButtonFrame.origin.y = frame.size.height - leftButtonFrame.size.height - self.buttonCenterY;
+    leftfirstButtonFrame.origin.y = frame.size.height - leftfirstButtonFrame.size.height - self.buttonCenterY;
+    
     rightButtonFrame.origin.y = frame.size.height - rightButtonFrame.size.height - self.buttonCenterY;
     
     BOOL heightChanged = CGRectGetHeight(textViewFrame) != CGRectGetHeight(self.textInputView.frame);
 
     self.leftAccessoryButton.frame = leftButtonFrame;
+    self.leftFirstAccessoryButton.frame = leftfirstButtonFrame;
     self.rightAccessoryButton.frame = rightButtonFrame;
+    
     self.textInputView.frame = textViewFrame;
 
     // Setting one's own frame like this is a no-no but seems to be the lesser of evils when working around the layout issues mentioned above.
@@ -273,6 +300,10 @@ static CGFloat const ATLButtonHeight = 28.0f;
 - (void)leftAccessoryButtonTapped
 {
     [self.inputToolBarDelegate messageInputToolbar:self didTapLeftAccessoryButton:self.leftAccessoryButton];
+}
+- (void)leftFirstAccessoryButtonTapped
+{
+    [self.inputToolBarDelegate messageInputToolbar:self didTapLeftAccessoryButton:self.leftFirstAccessoryButton];
 }
 
 - (void)rightAccessoryButtonTapped
@@ -388,10 +419,10 @@ static CGFloat const ATLButtonHeight = 28.0f;
 - (void)configureRightAccessoryButtonForText
 {
     self.rightAccessoryButton.accessibilityLabel = ATLMessageInputToolbarSendButton;
-    [self.rightAccessoryButton setImage:nil forState:UIControlStateNormal];
+    [self.rightAccessoryButton setImage:[UIImage imageNamed:@"sendf"] forState:UIControlStateNormal];
     self.rightAccessoryButton.contentEdgeInsets = UIEdgeInsetsMake(2, 0, 0, 0);
     self.rightAccessoryButton.titleLabel.font = self.rightAccessoryButtonFont;
-    [self.rightAccessoryButton setTitle:ATLLocalizedString(@"atl.messagetoolbar.send.key", self.rightAccessoryButtonTitle, nil) forState:UIControlStateNormal];
+    [self.rightAccessoryButton setTitle:@"" forState:UIControlStateNormal];
     [self.rightAccessoryButton setTitleColor:self.rightAccessoryButtonActiveColor forState:UIControlStateNormal];
     [self.rightAccessoryButton setTitleColor:self.rightAccessoryButtonDisabledColor forState:UIControlStateDisabled];
     if (!self.displaysRightAccessoryImage && !self.textInputView.text.length) {
