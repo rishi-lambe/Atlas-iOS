@@ -49,8 +49,8 @@ static CGFloat const ATLRightButtonHorizontalMargin = 4.0f;
 static CGFloat const ATLVerticalMargin = 7.0f;
 
 // Compose View Button Constants
-static CGFloat const ATLLeftAccessoryButtonWidth = 40.0f;
-static CGFloat const ATLRightAccessoryButtonDefaultWidth = 46.0f;
+static CGFloat const ATLLeftAccessoryButtonWidth = 30.0f;
+static CGFloat const ATLRightAccessoryButtonDefaultWidth = 30.0f;
 static CGFloat const ATLRightAccessoryButtonPadding = 5.3f;
 static CGFloat const ATLButtonHeight = 28.0f;
 
@@ -76,31 +76,36 @@ static CGFloat const ATLButtonHeight = 28.0f;
         self.displaysRightAccessoryImage = YES;
         self.firstAppearance = YES;
         
-        self.leftFirstAccessoryImage = [UIImage imageNamed:@"mic" inBundle:resourcesBundle compatibleWithTraitCollection:nil];
+        self.leftFirstAccessoryImage = [UIImage imageNamed:@"mic" inBundle:[NSBundle mainBundle] compatibleWithTraitCollection:nil];
         
         
         self.leftAccessoryButton = [[UIButton alloc] init];
         self.leftAccessoryButton.accessibilityLabel = ATLMessageInputToolbarCameraButton;
         self.leftAccessoryButton.contentMode = UIViewContentModeScaleAspectFit;
         [self.leftAccessoryButton setImage:self.leftAccessoryImage forState:UIControlStateNormal];
-        [self.leftAccessoryButton addTarget:self action:@selector(leftAccessoryButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+        [self.leftAccessoryButton addTarget:self action:@selector(leftAccessoryButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.leftAccessoryButton];
         self.leftAccessoryButton.tag=0;
+ 
         
         self.leftFirstAccessoryButton=[[UIButton alloc] init];
         self.leftFirstAccessoryButton.accessibilityLabel = ATLMessageInputToolbarCameraButton;
         self.leftFirstAccessoryButton.contentMode = UIViewContentModeScaleAspectFit;
         [self.leftFirstAccessoryButton setImage:self.leftFirstAccessoryImage forState:UIControlStateNormal];
-        [self.leftFirstAccessoryButton addTarget:self action:@selector(leftAccessoryButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+        [self.leftFirstAccessoryButton addTarget:self action:@selector(leftAccessoryButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.leftFirstAccessoryButton];
         self.leftFirstAccessoryButton.tag=1;
+        
         
         self.textInputView = [[ATLMessageComposeTextView alloc] init];
         self.textInputView.accessibilityLabel = ATLMessageInputToolbarTextInputView;
         self.textInputView.delegate = self;
         self.textInputView.layer.borderColor = ATLGrayColor().CGColor;
         self.textInputView.layer.borderWidth = 0.5;
-        self.textInputView.layer.cornerRadius = 5.0f;
+        self.textInputView.layer.cornerRadius = 4.0f;
+        self.textInputView.font =  [UIFont systemFontOfSize:14];
+        self.textInputView.attributedText = [[NSAttributedString alloc] initWithString:@"" attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:14],
+                                                                                          NSForegroundColorAttributeName : ATLGrayColor()}];
         [self addSubview:self.textInputView];
         
         self.verticalMargin = ATLVerticalMargin;
@@ -164,7 +169,8 @@ static CGFloat const ATLButtonHeight = 28.0f;
    
    
     if (self.rightAccessoryButtonFont && self.textInputView.text.length) {
-        rightButtonFrame.size.width = [ATLLocalizedString(@"atl.messagetoolbar.send.key", self.rightAccessoryButtonTitle, nil) boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:0 attributes:@{NSFontAttributeName: self.rightAccessoryButtonFont} context:nil].size.width + ATLRightAccessoryButtonPadding;
+        rightButtonFrame.size.width =  rightButtonFrame.size.width = ATLRightAccessoryButtonDefaultWidth;
+        //[ATLLocalizedString(@"atl.messagetoolbar.send.key", self.rightAccessoryButtonTitle, nil) boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:0 attributes:@{NSFontAttributeName: self.rightAccessoryButtonFont} context:nil].size.width + ATLRightAccessoryButtonPadding;
     } else {
         rightButtonFrame.size.width = ATLRightAccessoryButtonDefaultWidth;
     }
@@ -177,7 +183,7 @@ static CGFloat const ATLButtonHeight = 28.0f;
 
     self.dummyTextView.attributedText = self.textInputView.attributedText;
     CGSize fittedTextViewSize = [self.dummyTextView sizeThatFits:CGSizeMake(CGRectGetWidth(textViewFrame), MAXFLOAT)];
-    textViewFrame.size.height = ceil(MIN(fittedTextViewSize.height, self.textViewMaxHeight));
+    textViewFrame.size.height = ceil(MIN(fittedTextViewSize.height+4, self.textViewMaxHeight));
 
     frame.size.height = CGRectGetHeight(textViewFrame) + self.verticalMargin * 2;
     frame.origin.y -= frame.size.height - CGRectGetHeight(self.frame);
@@ -297,9 +303,15 @@ static CGFloat const ATLButtonHeight = 28.0f;
 
 #pragma mark - Actions
 
-- (void)leftAccessoryButtonTapped
+- (void)leftAccessoryButtonTapped:(id)sender
 {
-    [self.inputToolBarDelegate messageInputToolbar:self didTapLeftAccessoryButton:self.leftAccessoryButton];
+    UIButton *btnLeft = (UIButton*)sender;
+    if (btnLeft==self.leftAccessoryButton)
+    {
+        [self.inputToolBarDelegate messageInputToolbar:self didTapLeftAccessoryButton:self.leftAccessoryButton];
+    }
+    else
+        [self.inputToolBarDelegate messageInputToolbar:self didTapLeftAccessoryButton:self.leftFirstAccessoryButton];
 }
 - (void)leftFirstAccessoryButtonTapped
 {
@@ -420,7 +432,7 @@ static CGFloat const ATLButtonHeight = 28.0f;
 {
     self.rightAccessoryButton.accessibilityLabel = ATLMessageInputToolbarSendButton;
     [self.rightAccessoryButton setImage:[UIImage imageNamed:@"sendf"] forState:UIControlStateNormal];
-    self.rightAccessoryButton.contentEdgeInsets = UIEdgeInsetsMake(2, 0, 0, 0);
+    self.rightAccessoryButton.contentEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
     self.rightAccessoryButton.titleLabel.font = self.rightAccessoryButtonFont;
     [self.rightAccessoryButton setTitle:@"" forState:UIControlStateNormal];
     [self.rightAccessoryButton setTitleColor:self.rightAccessoryButtonActiveColor forState:UIControlStateNormal];

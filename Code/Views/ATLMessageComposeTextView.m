@@ -39,7 +39,7 @@ static NSString *const ATLPlaceholderText = @"Enter Message";
         
         self.attributedText = [[NSAttributedString alloc] initWithString:@"" attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:17],
                                                                                          NSForegroundColorAttributeName : ATLGrayColor()}];
-        self.textContainerInset = UIEdgeInsetsMake(4, 4, 4, 4);
+        self.textContainerInset = UIEdgeInsetsMake(10, 4, 4, 4);
         self.font = [UIFont systemFontOfSize:17];
         self.dataDetectorTypes = UIDataDetectorTypeLink;
         self.placeholder = ATLPlaceholderText;
