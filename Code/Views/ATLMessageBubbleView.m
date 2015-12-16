@@ -113,11 +113,11 @@ typedef NS_ENUM(NSInteger, ATLBubbleViewContentType) {
         
         _panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
         _panGestureRecognizer.delegate = self;
-        [self addGestureRecognizer:_panGestureRecognizer];
+        //[self addGestureRecognizer:_panGestureRecognizer];
         
         _longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
         _longPressGestureRecognizer.delegate = self;
-        [self addGestureRecognizer:_longPressGestureRecognizer];
+        //[self addGestureRecognizer:_longPressGestureRecognizer];
         
         UIMenuItem *resetMenuItem = [[UIMenuItem alloc] initWithTitle:@"Copy" action:@selector(copyItem)];
         _menuControllerActions = @[resetMenuItem];
