@@ -86,6 +86,11 @@ NSString *const ATLConversationCollectionViewAccessibilityIdentifier = @"Convers
     [self.magnifierView makeKeyAndVisible];
 }
 
+-(void)hideMagnifier
+{
+    self.magnifierView.hidden = YES;
+}
+
 #pragma mark - touches
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {

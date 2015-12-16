@@ -27,5 +27,5 @@
 #import "ATLConversationCollectionViewFooter.h"
 
 @interface ATLConversationCollectionView : UICollectionView
-
+-(void)hideMagnifier;
 @end

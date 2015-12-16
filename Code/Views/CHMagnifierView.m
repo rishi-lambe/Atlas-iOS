@@ -54,8 +54,7 @@
         _loupeImageView = [[UIImageView alloc] initWithFrame:CGRectOffset(CGRectInset(self.bounds, 0.0, 0.0), 0, 0)];
         _loupeImageView.image = [UIImage imageNamed:magnifierImageName];
         _loupeImageView.backgroundColor = [UIColor clearColor];
-        [self addSubview:_loupeImageView];
-        
+         [self.layer addSublayer:_loupeImageView.layer];
         
         self.contentLayer = [CALayer layer];
         
